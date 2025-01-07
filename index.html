@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto&display=swap" rel="stylesheet">
+  <title>Christmas Wishes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      outline: none;
+      border: none;
+      text-decoration: none;
+      text-transform: capitalize;
+      transition: 0.3s ease;
+    }
+
+    html {
+      font-size: 87%;
+      overflow-x: hidden;
+      scroll-padding-top: 7rem;
+      scroll-behavior: smooth;
+      background: url('christmas-pattern.png') repeat;
+    }
+
+    html::-webkit-scrollbar {
+        width: 1rem;
+    }
+
+    html::-webkit-scrollbar-track {
+        background: #444;
+    }
+
+    html::-webkit-scrollbar-thumb {
+        background: linear-gradient(to right, #64859f, #6489ab);
+        border-radius: 5rem;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      background: linear-gradient(to right, #FF99FF, #CCFF99);
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4rem;
+      color: #ff0000;
+      animation: glow 2s infinite alternate;
+      text-shadow: 2px 2px 5px #FFA07A;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #FF0000;
+      }
+      to {
+        text-shadow: 0 0 20px #FF0000, 0 0 30px #FFA07A;
+      }
+    }
+
+    #canvas-container {
+      position: relative;
+      margin: 20px auto;
+      width: 800px;
+      height: 600px;
+      background-image: url('tree.jpg');
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+      border: 5px solid #FF0000;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(255, 0, 0, 0.5);
+    }
+
+    #card-canvas,
+    #snowflakes-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #snowflakes-canvas {
+      pointer-events: none;
+      color: #FFFFFF;
+    }
+
+    .options {
+      margin: 20px 0;
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    .options input {
+      margin: 10px;
+    }
+
+    .upload-section {
+      background-color: #FFC0CB;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3);
+    }
+
+    button {
+      background: linear-gradient(to bottom, #FFC0CB, #FF0000);
+      color: white;
+      border: 2px solid #FF0000;
+      padding: 15px 30px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1.8rem;
+      box-shadow: 0 10px 20px rgba(255, 0, 0, 0.5);
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(to bottom, #FF0000, #FFC0CB);
+    }
+
+    .options img {
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px #FF0000;
+      transition: transform 0.3s ease;
+    }
+
+    .options img:hover {
+      transform: scale(1.1);
+    }
+
+    #download-card {
+      background-color: #FFC0CB;
+      padding: 15px 30px;
+      font-size: 1.6rem;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+    }
+    #download-card:hover {
+      background-color: #FF0000;
+      color: #FFC0CB;
+    }
+
+    .upload-preview {
+      margin-top: 20px;
+      border: 2px solid #FF0000;
+      border-radius: 10px;
+      overflow: hidden;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .upload-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      filter: blur(2px) grayscale(20%);
+      transition: filter 0.3s ease;
+      display: block;
+      margin: auto;
+    }
+
+    .upload-preview img:hover {
+      filter: blur(0) grayscale(0);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      #canvas-container {
+        width: 90%;
+        height: auto;
+      }
+
+      h1 {
+        font-size: 3rem;
+      }
+    }
+
+    .loading-spinner {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      color: #00FFFF;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      top: 20px;
+      width: 20px;
+      height: 20px;
+      background: url('gift.jpg') no-repeat;
+      background-size: cover;
+    }
+    body::before {
+      left: 20px;
+    }
+    body::after {
+      right: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎄 Create Your Christmas Wishes 🎅</h1>
+  <div class="upload-section">
+    <p>Upload your photo:
+      <input type="file" id="upload-image" accept="image/*">
+    </p>
+    <div class="upload-preview" id="upload-preview"></div>
+    <p>Choose a style</p>
+    <div class="options">
+      <label>
+        <input type="radio" name="style" value="style1" checked>
+        Style 1
+        <div><img src="style1.jpg" alt="Style 1"></div>
+      </label>
+      <label>
+        <input type="radio" name="style" value="style2">
+        Style 2
+        <div><img src="style2.jpg" alt="Style 2"></div>
+      </label>
+    </div>
+    <button id="generate-card">Generate Card</button>
+  </div>
+  <div id="canvas-container">
+    <canvas id="card-canvas"></canvas>
+    <canvas id="snowflakes-canvas"></canvas>
+  </div>
+  <button id="download-card" style="display: none;">Download Card</button>
+  <!--loading spinner-->
+  <div class="loading-spinner" id="loading-spinner">Loading...</div>
+  <!--optional christmas music-->
+  <audio id="background-music" src="1.mp3" autoplay loop></audio>
+  <script>
+    //define image URLs for styles
+    const style1URL = "style1.jpg";
+    const style2URL = "style2.jpg";
+
+    //get DOM elements
+    const uploadImageInput = document.getElementById("upload-image");
+    const generateButton = document.getElementById("generate-card");
+    const downloadButton = document.getElementById("download-card");
+    const cardCanvas = document.getElementById("card-canvas");
+    const snowflakesCanvas = document.getElementById("snowflakes-canvas");
+    const cardCtx = cardCanvas.getContext("2d");
+    const snowflakesCtx = snowflakesCanvas.getContext("2d");
+    const loadingSpinner = document.getElementById("loading-spinner");
+
+    //set canvas dimensions
+    cardCanvas.width = 800;
+    cardCanvas.height = 600;
+    snowflakesCanvas.width = 800;
+    snowflakesCanvas.height = 600;
+
+    //create snowflakes
+    const snowflakes = [];
+    const snowflakeCount = 100;
+    for (let i = 0; i < snowflakeCount; i++) {
+      snowflakes.push({
+        x: Math.random() * snowflakesCanvas.width,
+        y: Math.random() * -snowflakesCanvas.height,
+        speed: Math.random() + 1,
+      });
+    }
+
+    let isAnimating = false;
+
+    //function to draw snowflakes
+    function drawSnowflakes(ctx) {
+      ctx.font = "30px Arial";
+      ctx.fillStyle = "white";
+      for (let flake of snowflakes) {
+        ctx.fillText("❄️", flake.x, flake.y);
+        flake.y += flake.speed;
+        if (flake.y > snowflakesCanvas.height + 50) {
+          flake.y = -50;
+          flake.x = Math.random() * snowflakesCanvas.width;
+        }
+      }
+    }
+
+    //function to animate snowflakes
+    function animate() {
+      if (!isAnimating) return;
+      snowflakesCtx.clearRect(0, 0, snowflakesCanvas.width, snowflakesCanvas.height);
+      drawSnowflakes(snowflakesCtx);
+      requestAnimationFrame(animate);
+    }
+
+    //function to load an image
+    const loadImage = (src) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+        img.src = src;
+      });
+    };
+
+    //define style settings
+    const styleSettings = {
+      style1: {
+        circle: { x: 400, y: 300, radius: 110 },
+      },
+      style2: {
+        circle: { x: 400, y: 300, radius: 110 },
+      }
+    };
+
+    //generate card on button click
+    generateButton.addEventListener("click", async () => {
+      if (!uploadImageInput.files[0]) {
+        alert("Please upload your photo first!");
+        return;
+      }
+
+      //show loading spinner and disable button
+      loadingSpinner.style.display = "block";
+      generateButton.disabled = true;
+
+      //get selected style and its settings
+      const selectedStyle = document.querySelector('input[name="style"]:checked').value;
+      const styleURL = selectedStyle === "style1" ? style1URL : style2URL;
+      const settings = styleSettings[selectedStyle];
+
+      //set border color based on style
+      const borderColor = selectedStyle === "style1" ? "#e16c88" : "#4ee5d8";
+
+      try {
+        //load user image and style image
+        const userImageFile = uploadImageInput.files[0];
+        const userImageURL = URL.createObjectURL(userImageFile);
+        const [styleImage, userImage] = await Promise.all([
+          loadImage(styleURL),
+          loadImage(userImageURL)
+        ]);
+
+        //clear canvases and draw style image
+        cardCtx.clearRect(0, 0, cardCanvas.width, cardCanvas.height);
+        snowflakesCtx.clearRect(0, 0, snowflakesCanvas.width, snowflakesCanvas.height);
+        cardCtx.drawImage(styleImage, 0, 0, cardCanvas.width, cardCanvas.height);
+
+        //clip the canvas to a circle and draw the user image
+        cardCtx.save();
+        cardCtx.beginPath();
+        cardCtx.arc(settings.circle.x, settings.circle.y, settings.circle.radius, 0, 2 * Math.PI);
+        cardCtx.clip();
+
+        //calculate aspect ratio and resize image to fit the circle
+        const aspectRatio = userImage.width / userImage.height;
+        let drawWidth = settings.circle.radius * 2;
+        let drawHeight = settings.circle.radius * 2;
+
+        if (aspectRatio > 1) {
+          drawHeight = drawWidth / aspectRatio;
+        } else {
+          drawWidth = drawHeight * aspectRatio;
+        }
+
+        //draw the user image centered in the circle
+        cardCtx.drawImage(
+          userImage,
+          settings.circle.x - drawWidth / 2,
+          settings.circle.y - drawHeight / 2,
+          drawWidth,
+          drawHeight
+        );
+
+        //restore the canvas state
+        cardCtx.restore();
+
+        //draw the border around the circle
+        cardCtx.beginPath();
+        cardCtx.arc(settings.circle.x, settings.circle.y, settings.circle.radius, 0, 2 * Math.PI);
+        cardCtx.lineWidth = 10; // Set the border width
+        cardCtx.strokeStyle = borderColor;
+        cardCtx.stroke();
+
+        //add text to the card
+        cardCtx.font = "40px 'Arial', sans-serif";
+        cardCtx.textAlign = "center";
+        cardCtx.shadowColor = "#ff0000";
+        cardCtx.shadowBlur = 20;
+        cardCtx.fillStyle = "#ffffff";
+        cardCtx.fillText("Merry Christmas!", cardCanvas.width / 2, 80);
+        cardCtx.shadowBlur = 0;
+
+        //show download button
+        downloadButton.style.display = "inline-block";
+
+        //start snowflake animation if not already running
+        if (!isAnimating) {
+          isAnimating = true;
+          animate();
+        }
+
+      } catch (error) {
+        alert("Error generating the card. Please try again.");
+        console.error(error);
+      } finally {
+        //hide loading spinner and enable button
+        loadingSpinner.style.display = "none";
+        generateButton.disabled = false;
+      }
+    });
+
+    //download card on button click
+    downloadButton.addEventListener("click", () => {
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = cardCanvas.width;
+      tempCanvas.height = cardCanvas.height;
+      const tempCtx = tempCanvas.getContext("2d");
+      tempCtx.drawImage(cardCanvas, 0, 0);
+      const dataURL = tempCanvas.toDataURL();
+      const link = document.createElement("a");
+      link.download = "Christmas_Wish_Card.png";
+      link.href = dataURL;
+      link.click();
+    });
+
+    //preview uploaded image
+    const uploadPreview = document.getElementById("upload-preview");
+    uploadImageInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          uploadPreview.innerHTML = `<img src="${event.target.result}" alt="Uploaded Image">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    //add music toggle button
+    const musicButton = document.createElement('button');
+    musicButton.innerHTML = 'Toggle Music';
+    musicButton.style.position = 'fixed';
+    musicButton.style.bottom = '20px';
+    musicButton.style.right = '20px';
+    musicButton.addEventListener('click', () => {
+      const audio = document.getElementById('background-music');
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    });
+    document.body.appendChild(musicButton);
+  </script>
+</body>
+</html>
