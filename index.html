@@ -178,21 +178,6 @@
       filter: blur(0) grayscale(0);
     }
 
-    /*@media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
-
-      #canvas-container {
-        width: 90%;
-        height: auto;
-      }
-
-      h1 {
-        font-size: 3rem;
-      }
-    }*/
-
     .loading-spinner {
       display: none;
       position: fixed;
@@ -218,6 +203,53 @@
     }
     body::after {
       right: 20px;
+    }
+
+    /* Media Queries for Mobile */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      #canvas-container {
+        width: 100%;
+        height: auto;
+        padding: 0;
+      }
+
+      #card-canvas,
+      #snowflakes-canvas {
+        width: 100%;
+        height: auto;
+      }
+
+      button {
+        font-size: 1.4rem;
+        padding: 10px 20px;
+      }
+
+      .options {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .options input {
+        margin: 10px auto;
+      }
+
+      .options img {
+        max-width: 80px;
+        max-height: 80px;
+      }
+
+      .upload-preview {
+        width: 150px;
+        height: 150px;
+      }
     }
   </style>
 </head>
